@@ -1,5 +1,4 @@
 <?php namespace gsavastano\Dssg;
-	require_once __DIR__.'/simple_html_dom.php';
 	class Dssg {
 
 		/**
