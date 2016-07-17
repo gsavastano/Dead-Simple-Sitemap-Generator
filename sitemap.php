@@ -4,7 +4,6 @@
 
 	$defaults = parse_ini_file("sitemap.ini");
 
-	define ('CLI', $config['cli']);
 	define ('VERSION', $config['version']);
 
 
