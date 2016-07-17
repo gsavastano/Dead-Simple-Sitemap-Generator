@@ -13,7 +13,7 @@
 
 	$config = array(
 		'sitemap' 	=> 	valFileName($options['s']) 			? $options['s'] : $defaults['sitemap'],
-		'url' 		=>	valUrl($options['u']) 				? $options['u'] : $defaults['url'],
+		'url' 		=>	isset($options['u'])				? $options['u'] : $defaults['url'],
 		'frequency' => 	valFrequency($options['f']) 		? $options['s'] : $defaults['frequency'],
 		'priority' 	=> 	valPriority($options['f']) 			? $options['p'] : $defaults['priority'],
 		'extension'	=>	explode(',',$defaults['extension']),
@@ -26,11 +26,6 @@
 	function valFileName ($val) {
 		$pattern = '/^(?!.*\/)(\w|\s|-)+\.xml$/';
 		return preg_match($pattern, $val);
-	}
-
-	function valUrl ($val) {
-		$pattern = '@(https?)://(-\.)?([^\s/?\.#-]+\.?)+(/[^\s]*)?$@iS';
-		return preg_match($pattern, $val);		
 	}
 	
 	function valFrequency ($val) {
