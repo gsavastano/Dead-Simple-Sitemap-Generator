@@ -22,8 +22,7 @@
 	);
 
 	if(isset($options['c'])) printConfig();
-
-
+ 
 	function valFileName ($val) {
 		$pattern = '/^(?!.*\/)(\w|\s|-)+\.xml$/';
 		return preg_match($pattern, $val);
@@ -40,16 +39,7 @@
 	}
 	
 	function valPriority ($val) {
-		return filter_var(
-				    $val, 
-				    FILTER_VALIDATE_FLOAT, 
-				    array(
-				        'options' => array(
-			            'min_range' => 0.1, 
-			            'max_range' => 1
-				        )
-				    )
-				);
+		return filter_var( $val, FILTER_VALIDATE_FLOAT	) > 1 || !is_numeric($val) ? false : $val;
 	}
 
 	function printHelp() {
@@ -219,7 +209,6 @@ Use at your own risk :)
 
 	$scanned = array ();
 	doScan ($config['url']);
-
 	fwrite ($pf, "</urlset>\n");
 	fclose ($pf);
 
