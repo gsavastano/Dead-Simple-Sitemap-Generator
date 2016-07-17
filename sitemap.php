@@ -13,15 +13,21 @@
 
 	$config = array(
 		'sitemap' 	=> 	valFileName($options['s']) 			? $options['s'] : $defaults['sitemap'],
+		'protocol'	=>	valProtocol($options['a'])			? $options['a'] : $defaults['protocol'],
 		'url' 		=>	isset($options['u'])				? $options['u'] : $defaults['url'],
 		'frequency' => 	valFrequency($options['f']) 		? $options['s'] : $defaults['frequency'],
 		'priority' 	=> 	valPriority($options['f']) 			? $options['p'] : $defaults['priority'],
 		'extension'	=>	explode(',',$defaults['extension']),
 	);
 
-	$config['url'] = filter_var ($config['url'], FILTER_SANITIZE_URL);
+	$config['url'] = filter_var ($config['protocol']."://".$config['url'], FILTER_SANITIZE_URL);
 
 	if(isset($options['c'])) printConfig();
+
+	function valProtocol ($val) {
+		$protocols = array('http', 'https');
+		return in_array($val, $protocols);
+	}
 
 	function valFileName ($val) {
 		$pattern = '/^(?!.*\/)(\w|\s|-)+\.xml$/';
@@ -50,6 +56,7 @@ Option 	Meaning
 -v 	Display program version
 -h 	Print Help 
 -s 	Set Output file name  
+-a 	Set Protocol
 -u 	Set Target URL 
 -f 	Set Frequency
 -p 	Set Priority
