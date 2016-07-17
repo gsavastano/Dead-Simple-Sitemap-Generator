@@ -3,7 +3,7 @@
     "description": "Generates XML sitemap file for any given URL",
     "license": "MIT",
     "keywords": ["sitemap","crawler"],
-    "homepage": "https://github.com/gsavastano/Dead-Simple-Sitemap-Generator/",
+    "homepage": "https://github.com/gsavastano/Dssg/",
     "authors": [
         {
             "name": "Giovanni Savastano",
