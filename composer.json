@@ -1,5 +1,5 @@
 {
-    "name": "gsavastano/Dssg",
+    "name": "gsavastano/dssg",
     "description": "Generates XML sitemap file for any given URL",
     "license": "MIT",
     "keywords": ["sitemap","crawler"],
@@ -15,5 +15,9 @@
     },
     "require-dev": {
         "phpunit/phpunit": "4.0.*"
+    },
+    "autoload": {
+        "files": ["src/Dssg.php"]
+        }
     }
 }
