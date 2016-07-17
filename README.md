@@ -1,32 +1,60 @@
-# Dead Simple Sitemap Generator v.0.1
+# Dead Simple Sitemap Generator 0.1
 
-This is a simple and small script to create a XML sitemap for Google and other search engines. 
-It has many limitations, see below
+This library will crawl all unique internal links found on a given website
+up to a specified maximum page depth.
 
-Sitemap format: [http://www.sitemaps.org/protocol.html](http://www.sitemaps.org/protocol.html)
+## How to Install
 
-##Features
- - Crawls webpages
- - Generates seperate XML file which gets updated every time the script gets executed
- - command line options to ovveride default settings and config.ini file for static variables
+You can install this library with [Composer][composer]. Drop this into your `composer.json`
+manifest file:
 
-## Usage
- - Configure by modifing sitemap.ini or with command line (Use -h to get list of options)
-    - Select URL to crawl
-    - Select the file to which the sitemap will be saved
-    - Select priority and frequency
+    {
+        "require": {
+            "gsavastano/dssg": "0.1"
+        }
+    }
 
-CLI command to create the XML file: `php sitemap.php [OPTIONS]`
+Then run `composer install`.
 
+## Getting Started
 
-Included scripts:
+Here's a quick demo to crawl a website:
 
- - [PHP Simple HTML DOM Parser](http://simplehtmldom.sourceforge.net/) - A HTML DOM parser written in PHP5+ let you manipulate HTML in a very easy way!.
+    <?php
+    require 'vendor/autoload.php';
 
+    // Initiate crawl
+    $crawler = new \Arachnid\Crawler('http://www.example.com', 3);
+    $crawler->traverse();
 
-## Limitations
-- requires a lot of memory for big/huge sites
-- doesn't always parse correctly all URL parameters (ex: ?#&)
-- all URL indexed have the same priority and frequency
-- should be a composer package
-- it doesn't validate config.ini values, only inputs from command line
+    // Get link data
+    $links = $crawler->getLinks();
+    print_r($links);
+
+## How to Contribute
+
+1. Fork this repository
+2. Create a new branch for each feature or improvement
+3. Send a pull request from each feature branch
+
+It is very important to separate new features or improvements into separate feature branches,
+and to send a pull request for each branch. This allows me to review and pull in new features
+or improvements individually.
+
+All pull requests must adhere to the [PSR-2 standard][psr2].
+
+## System Requirements
+
+* PHP 5.4.0+
+
+## Authors
+
+* Josh Lockhart <https://github.com/codeguy>
+* Zeid Rashwani <http://zrashwani.com>
+
+## License
+
+MIT Public License
+
+[composer]: http://getcomposer.org/
+[psr2]: https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-2-coding-style-guide.md
