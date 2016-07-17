@@ -29,3 +29,4 @@ Included scripts:
 - doesn't always parse correctly all URL parameters (ex: ?#&)
 - all URL indexed have the same priority and frequency
 - should be a composer package
+- it doesn't validate config.ini values, only inputs from command line
