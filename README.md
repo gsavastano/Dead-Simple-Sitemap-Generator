@@ -27,12 +27,14 @@ Here's a quick demo to crawl a website:
     $crawler = new \gsavastano\Dssg\Dssg;
     $crawler->startCrawl();
 
+it will create a sitemap.xml (or whatever name you prefer)
+
 ## Setup
 
 There are two ways to set up the crawler:
 
-* changing the variables in src/sitemap.ini
-* by passing the parameters directly on the command line - use php example/crawl.php -h for help
+* change variables in src/sitemap.ini
+* use the command line - use php example/crawl.php -h for help
  
 
 ## System Requirements
