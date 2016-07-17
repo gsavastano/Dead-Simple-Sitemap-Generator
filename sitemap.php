@@ -171,8 +171,8 @@ Use at your own risk :)
 				}
 
 				if (!$ignore) {
-					foreach ($config['extension'] as $e => $ext) {
-						if (strpos ($next_url, $ext) > 0) {
+					foreach ($config['extension'] as $ext) {
+						if (strpos ($next_url, trim($ext)) > 0) {
 							fwrite ($pf, "  <url>\n" .
 										 "    <loc>" . htmlentities ($next_url) ."</loc>\n" .
 										 "    <changefreq>".$config['frequency']."</changefreq>\n" .
