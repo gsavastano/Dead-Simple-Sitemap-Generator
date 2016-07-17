@@ -139,12 +139,14 @@ Use at your own risk :)
 		array_push ($scanned, $url);
 		$html = str_get_html (getUrl ($url));
 		if(is_object($html)) {
-			$a1   = $html->find('a');
+			$links = $html->find('a');
 			unset($html);
 		} else 
 			return;
 		
-		foreach ($a1 as $val) {
+		if(!(is_array($links) && !empty($links))) return;
+
+		foreach ($links as $val) {
 			$next_url = $val->href or "";
 
 			$fragment_split = explode ("#", $next_url);
