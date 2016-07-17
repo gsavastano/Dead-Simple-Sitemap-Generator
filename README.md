@@ -24,33 +24,20 @@ Here's a quick demo to crawl a website:
     require 'vendor/autoload.php';
 
     // Initiate crawl
-    $crawler = new \Arachnid\Crawler('http://www.example.com', 3);
-    $crawler->traverse();
+    $crawler = new \gsavastano\Dssg\Dssg;
+    $crawler->startCrawl();
 
-    // Get link data
-    $links = $crawler->getLinks();
-    print_r($links);
+## Setup
 
-## How to Contribute
+There are two ways to set up the crawler:
 
-1. Fork this repository
-2. Create a new branch for each feature or improvement
-3. Send a pull request from each feature branch
-
-It is very important to separate new features or improvements into separate feature branches,
-and to send a pull request for each branch. This allows me to review and pull in new features
-or improvements individually.
-
-All pull requests must adhere to the [PSR-2 standard][psr2].
+* changing the variables in src/sitemap.ini
+* by passing the parameters directly on the command line - use php example/crawl.php -h for help
+ 
 
 ## System Requirements
 
-* PHP 5.4.0+
-
-## Authors
-
-* Josh Lockhart <https://github.com/codeguy>
-* Zeid Rashwani <http://zrashwani.com>
+* PHP 5.3.0+
 
 ## License
 
