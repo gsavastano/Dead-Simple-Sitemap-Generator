@@ -3,11 +3,10 @@
 	require_once "simple_html_dom.php";
 
 	$defaults = parse_ini_file("sitemap.ini");
-
 	define ('VERSION', $config['version']);
 
-
 	$options = getopt("v::h::c::s::u::f::p::");
+	$scanned = array ();
 
 	if(isset($options['h'])) printHelp();
 	if(isset($options['v'])) printVersion();
@@ -19,6 +18,8 @@
 		'priority' 	=> 	valPriority($options['f']) 			? $options['p'] : $defaults['priority'],
 		'extension'	=>	explode(',',$defaults['extension']),
 	);
+
+	$config['url'] = filter_var ($config['url'], FILTER_SANITIZE_URL);
 
 	if(isset($options['c'])) printConfig();
  
@@ -195,8 +196,6 @@ Use at your own risk :)
 		return;
 	}
 
-	$config['url'] = filter_var ($config['url'], FILTER_SANITIZE_URL);
-
 	fwrite ($pf, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" .
 				 "<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\"\n" .
 				 "        xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n" .
@@ -208,7 +207,6 @@ Use at your own risk :)
 				 "    <priority>".$config['priority']."</priority>\n" .
 				 "  </url>\n");
 
-	$scanned = array ();
 	doScan ($config['url']);
 	fwrite ($pf, "</urlset>\n");
 	fclose ($pf);
