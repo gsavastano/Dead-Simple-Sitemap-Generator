@@ -3,7 +3,7 @@
 	require_once "simple_html_dom.php";
 
 	$defaults = parse_ini_file("sitemap.ini");
-	define ('VERSION', $defaut['version']);
+	define ('VERSION', $defaults['version']);
 
 	$options = getopt("v::h::c::s::u::f::p::");
 	$scanned = array ();
