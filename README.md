@@ -18,16 +18,30 @@ Then run `composer install`.
 
 ## Getting Started
 
-Here's a quick demo to crawl a website:
+Create a simple PHP File as follows
 
     <?php
-    require 'vendor/autoload.php';
+	
+	require 'vendor/autoload.php';
+	use gsavastano\dssg\dssg;
+	
+	$crawler = new Dssg;
+	$crawler->startCrawl();
+	
+then lunch it from the command line
 
-    // Initiate crawl
-    $crawler = new \gsavastano\Dssg\Dssg;
-    $crawler->startCrawl();
+	php yourfile.php -ahttps -ugoogle.it -fweekly -p0.5 -ssitemap.xml
 
-it will create a sitemap.xml (or whatever name you prefer)
+to see the options
+
+	php yourfile.php -h
+
+please consider: the script WILL timeout with big/huge websites, if that happens try increasing your memory_limit
+
+	<?php
+	ini_set('memory_limit', '2048M');
+
+
 
 ## Setup
 
@@ -36,6 +50,15 @@ There are two ways to set up the crawler:
 * change variables in src/sitemap.ini
 * use the command line - use php example/crawl.php -h for help
  
+
+
+## Limitations
+- requires a lot of memory for big/huge sites
+- doesn't always parse correctly all URL parameters (ex: ?#&)
+- all URL indexed have the same priority and frequency
+- it doesn't validate config.ini values, only inputs from command line and the start URL
+- dd
+- s
 
 ## System Requirements
 
@@ -46,4 +69,3 @@ There are two ways to set up the crawler:
 MIT Public License
 
 [composer]: http://getcomposer.org/
-[psr2]: https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-2-coding-style-guide.md
