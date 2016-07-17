@@ -22,10 +22,10 @@
 	$config['url'] = filter_var ($config['url'], FILTER_SANITIZE_URL);
 
 	if(isset($options['c'])) printConfig();
- 
+
 	function valFileName ($val) {
 		$pattern = '/^(?!.*\/)(\w|\s|-)+\.xml$/';
-		return preg_match($pattern, $val);
+		return preg_match($pattern, $val) == 1 ? true : false;
 	}
 	
 	function valFrequency ($val) {
