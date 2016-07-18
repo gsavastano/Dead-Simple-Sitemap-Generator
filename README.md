@@ -9,7 +9,7 @@ manifest file:
 
     {
         "require": {
-            "gsavastano/dssg": "dev-master"
+            "gsavastano/dssg": "0.2"
         }
     }
 
