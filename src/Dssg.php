@@ -3,44 +3,44 @@
 class Dssg
 {
     /**
-         * @var array List of Defaults Configuration values
-         */
-        protected $defaults = [];
+    * @var array List of Defaults Configuration values
+     */
+    protected $defaults = [];
 
-        /**
-         * @var array Configuration values
-         */
-        protected $config = [];
+    /**
+     * @var array Configuration values
+     */
+    protected $config = [];
 
-        /**
-         * @var string Version number
-         */
-        protected $version = 'debug';
+    /**
+     * @var string Version number
+     */
+    protected $version = 'debug';
 
-        /**
-         * @var array List of Values from CLI
-         */
-        public $options = [];
+    /**
+     * @var array List of Values from CLI
+     */
+    public $options = [];
 
-        /**
-         * @var array List of URLs already scanned
-         */
-        private $scanned = [];
+    /**
+     * @var array List of URLs already scanned
+     */
+    private $scanned = [];
 
-        /**
-         * @var string CLI Arguments
-         */
-        private $args = 'vhs::a::u::f::p::';
+    /**
+     * @var string CLI Arguments
+     */
+    private $args = 'vhs::a::u::f::p::';
 
-        /**
-         * @var object File Pointer
-         */
-        private $fileHandle = false;
+    /**
+     * @var object File Pointer
+     */
+    private $fileHandle = false;
 
-        /**
-         * @var bool Check Script status
-         */
-        private $ready = false;
+    /**
+     * @var bool Check Script status
+     */
+    private $ready = false;
 
     public function __construct()
     {
@@ -49,13 +49,13 @@ class Dssg
         }
     }
 
-        /**
-         * @var bool Turn On/Off reading from CLI
-         */
-        private function isCli()
-        {
-            return php_sapi_name() === 'cli';
-        }
+   /**
+     * @var bool Turn On/Off reading from CLI
+     */
+    private function isCli()
+    {
+        return php_sapi_name() === 'cli';
+    }
 
     public function setConfig()
     {
@@ -275,11 +275,12 @@ Use at your own risk :)
                 if (!$ignore) {
                     foreach ($this->config['extension'] as $ext) {
                         if (strpos($next_url, trim($ext)) > 0) {
-                            fwrite($this->fileHandle, "  <url>\n".
-                                             '    <loc>'.htmlentities($next_url)."</loc>\n".
-                                             '    <changefreq>'.$this->config['frequency']."</changefreq>\n".
-                                             '    <priority>'.$this->config['priority']."</priority>\n".
-                                             "  </url>\n");
+                            fwrite($this->fileHandle, 
+                                            "   <url>\n".
+                                            "       <loc>".htmlentities($next_url)."</loc>\n".
+                                            "       <changefreq>".$this->config['frequency']."</changefreq>\n".
+                                            "       <priority>".$this->config['priority']."</priority>\n".
+                                            "   </url>\n");
                             $this->doScan($next_url);
                         }
                     }
