@@ -256,7 +256,7 @@ Use at your own risk :)
                     (substr($nextUrl, 0, 8) != 'https://') &&
                     (substr($nextUrl, 0, 6) != 'ftp://')   &&
                     (substr($nextUrl, 0, 7) != 'mailto:')) {
-                $nextUrl = @$this->relToAbs($nextUrl, $url);
+                $nextUrl = @$this->relToAbs($nextUrl, $this->config['url']);
             }
 
             $nextUrl = filter_var($nextUrl, FILTER_SANITIZE_URL);
