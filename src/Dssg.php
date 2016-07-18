@@ -124,8 +124,8 @@ class Dssg
 
     public function printHelp()
     {
-        echo '
-Dead Simple Sitemap Generator version '.$this->version.'
+        echo "
+Dead Simple Sitemap Generator version ".$this->version."
 Giovanni Savastano (gsavastano@gmail.com)
 MIT Licence
 Use at your own risk :)
@@ -140,18 +140,18 @@ Option 	Meaning
 -u 	Set Target URL 
 -f 	Set Frequency
 -p 	Set Priority
-';
+";
         die();
     }
 
     public function printVersion()
     {
-        echo '
-Dead Simple Sitemap Generator version '.$this->version.'
+        echo "
+Dead Simple Sitemap Generator version ".$this->version."
 Giovanni Savastano (gsavastano@gmail.com)
 MIT Licence
 Use at your own risk :)
-';
+";
         die();
     }
 
@@ -223,7 +223,7 @@ Use at your own risk :)
             return;
         }
         if (!$this->fileHandle) {
-            echo 'You must first create the sitemap file. Call createFile() to do that';
+            echo "You must first create the sitemap file. Call createFile() to do that";
             die();
         }
 
@@ -303,7 +303,7 @@ Use at your own risk :)
 
         $this->fileHandle = fopen($this->config['sitemap'], 'w');
         if (!$this->fileHandle) {
-            echo 'Cannot create '.$this->config['sitemap'].'!'."\n";
+            echo "Cannot create ".$this->config['sitemap']."!\n";
 
             return;
         }
@@ -313,10 +313,10 @@ Use at your own risk :)
              "        xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n".
              "        xsi:schemaLocation=\"http://www.sitemaps.org/schemas/sitemap/0.9\n".
              "        http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd\">\n".
-             "  <url>\n".
-             '    <loc>'.htmlentities($this->config['url'])."</loc>\n".
-             '    <changefreq>'.$this->config['frequency']."</changefreq>\n".
-             '    <priority>'.$this->config['priority']."</priority>\n".
+             "<url>\n".
+             "  <loc>".htmlentities($this->config['url'])."</loc>\n".
+             "      <changefreq>".$this->config['frequency']."</changefreq>\n".
+             "      <priority>".$this->config['priority']."</priority>\n".
              "  </url>\n");
 
         return;
@@ -331,7 +331,7 @@ Use at your own risk :)
         fwrite($this->fileHandle, "</urlset>\n");
         fclose($this->fileHandle);
 
-        echo 'Done.'."\n";
-        echo $this->config['sitemap'].' created.'."\n";
+        echo "Done."."\n";
+        echo $this->config['sitemap']." created."."\n";
     }
 }
