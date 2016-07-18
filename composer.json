@@ -1,6 +1,6 @@
 {
     "name": "gsavastano/dssg",
-    "description": "Generates XML sitemap file for any given URL - still on development",
+    "description": "Generates XML sitemap file for any given URL - still under development",
     "license": "MIT",
     "keywords": ["sitemap","crawler"],
     "homepage": "https://github.com/gsavastano/Dssg/",
