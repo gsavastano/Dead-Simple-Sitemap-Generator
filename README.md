@@ -1,7 +1,6 @@
 # Dead Simple Sitemap Generator 0.1
 
-This library will crawl all unique internal links found on a given website
-up to a specified maximum page depth.
+This library will crawl all unique internal links found on a given website.
 
 ## How to Install
 
@@ -28,7 +27,7 @@ Create a simple PHP File as follows
 	$crawler = new Dssg;
 	$crawler->startCrawl();
 	
-then lunch it from the command line
+then launch it from the command line
 
 	php yourfile.php -uexample.com -ahttps -p0.2 -fdaily -sexample.xml
 to see the options
@@ -41,23 +40,16 @@ please consider: the script WILL timeout with big/huge websites, if that happens
 	ini_set('memory_limit', '2048M');
 
 
-
-## Setup
-
-There are two ways to set up the crawler:
-
-* change variables in src/sitemap.ini
-* use the command line - use php example/crawl.php -h for help
- 
-
-
 ## Limitations
 - requires a lot of memory for big/huge sites
 - doesn't always parse correctly all URL parameters (ex: ?#&)
 - all URL indexed have the same priority and frequency
-- it doesn't validate config.ini values, only inputs from command line and the start URL
-- dd
-- s
+- it does not index assets
+- it does not index links pointing to external websites
+- it does not index subdomains
+- it is not possible to set default values 
+- it has bugs, I'm sure of it.
+- test coverage is....basic 
 
 ## System Requirements
 
