@@ -69,10 +69,9 @@ class Dssg
 
         $this->version = $this->defaults['version'];
 
-            //handle Help, Version right away
-            if (isset($this->options['h'])) {
-                $this->printHelp();
-            }
+        if (isset($this->options['h'])) {
+            $this->printHelp();
+        }
         if (isset($this->options['v'])) {
             $this->printVersion();
         }
