@@ -168,9 +168,9 @@ Use at your own risk :)
         if (parse_url($rel, PHP_URL_SCHEME) != '') {
             return $rel;
         }
-        $first_char = substr($rel, 0, 1);
+        $firstChar = substr($rel, 0, 1);
 
-        if ($first_char == '#'  || $first_char == '?') {
+        if ($firstChar == '#'  || $firstChar == '?') {
             return $base.$rel;
         }
 
@@ -178,14 +178,14 @@ Use at your own risk :)
 
         $path = preg_replace('#/[^/]*$#',  '', $path);
 
-        if ($first_char ==  '/') {
+        if ($firstChar ==  '/') {
             $path = '';
         }
 
         $abs = "$host$path/$rel";
 
-        $re = array('#(/.?/)#', '#/(?!..)[^/]+/../#');
-        for ($n = 1; $n > 0;  $abs = preg_replace($re, '/', $abs, -1, $n)) {
+        $expr = array('#(/.?/)#', '#/(?!..)[^/]+/../#');
+        for ($n = 1; $n > 0;  $abs = preg_replace($expr, '/', $abs, -1, $n)) {
         }
 
         return  $scheme.'://'.$abs;
@@ -198,21 +198,21 @@ Use at your own risk :)
         }
         $agent = 'Mozilla/5.0 (compatible;)';
 
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_AUTOREFERER, true);
-        curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_USERAGENT, $agent);
-        curl_setopt($ch, CURLOPT_VERBOSE, 1);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
-        curl_setopt($ch, CURLOPT_HEADER, 0);
-        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
+        $curlHandler = curl_init();
+        curl_setopt($curlHandler, CURLOPT_AUTOREFERER, true);
+        curl_setopt($curlHandler, CURLOPT_URL, $url);
+        curl_setopt($curlHandler, CURLOPT_USERAGENT, $agent);
+        curl_setopt($curlHandler, CURLOPT_VERBOSE, 1);
+        curl_setopt($curlHandler, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($curlHandler, CURLOPT_SSL_VERIFYHOST, false);
+        curl_setopt($curlHandler, CURLOPT_HEADER, 0);
+        curl_setopt($curlHandler, CURLOPT_FOLLOWLOCATION, 1);
+        curl_setopt($curlHandler, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($curlHandler, CURLOPT_CONNECTTIMEOUT, 5);
 
-        $data = curl_exec($ch);
+        $data = curl_exec($curlHandler);
 
-        curl_close($ch);
+        curl_close($curlHandler);
 
         return $data;
     }
@@ -247,41 +247,41 @@ Use at your own risk :)
         }
 
         foreach ($links as $val) {
-            $next_url = $val->href or '';
+            $nextUrl = $val->href or '';
 
-            $fragment_split = explode('#', $next_url);
-            $next_url = $fragment_split[0];
+            $fragmentSplit = explode('#', $nextUrl);
+            $nextUrl = $fragmentSplit[0];
 
-            if ((substr($next_url, 0, 7) != 'http://')  &&
-                    (substr($next_url, 0, 8) != 'https://') &&
-                    (substr($next_url, 0, 6) != 'ftp://')   &&
-                    (substr($next_url, 0, 7) != 'mailto:')) {
-                $next_url = @$this->relToAbs($next_url, $url);
+            if ((substr($nextUrl, 0, 7) != 'http://')  &&
+                    (substr($nextUrl, 0, 8) != 'https://') &&
+                    (substr($nextUrl, 0, 6) != 'ftp://')   &&
+                    (substr($nextUrl, 0, 7) != 'mailto:')) {
+                $nextUrl = @$this->relToAbs($nextUrl, $url);
             }
 
-            $next_url = filter_var($next_url, FILTER_SANITIZE_URL);
+            $nextUrl = filter_var($nextUrl, FILTER_SANITIZE_URL);
 
-            if (substr($next_url, 0, strlen($this->config['url'])) == $this->config['url']) {
+            if (substr($nextUrl, 0, strlen($this->config['url'])) == $this->config['url']) {
                 $ignore = false;
 
-                if (!filter_var($next_url, FILTER_VALIDATE_URL)) {
+                if (!filter_var($nextUrl, FILTER_VALIDATE_URL)) {
                     $ignore = true;
                 }
 
-                if (in_array($next_url, $this->scanned)) {
+                if (in_array($nextUrl, $this->scanned)) {
                     $ignore = true;
                 }
 
                 if (!$ignore) {
                     foreach ($this->config['extension'] as $ext) {
-                        if (strpos($next_url, trim($ext)) > 0) {
+                        if (strpos($nextUrl, trim($ext)) > 0) {
                             fwrite($this->fileHandle, 
                                             "   <url>\n".
-                                            "       <loc>".htmlentities($next_url)."</loc>\n".
+                                            "       <loc>".htmlentities($nextUrl)."</loc>\n".
                                             "       <changefreq>".$this->config['frequency']."</changefreq>\n".
                                             "       <priority>".$this->config['priority']."</priority>\n".
                                             "   </url>\n");
-                            $this->doScan($next_url);
+                            $this->doScan($nextUrl);
                         }
                     }
                 }
