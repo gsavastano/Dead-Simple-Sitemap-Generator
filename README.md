@@ -50,6 +50,7 @@ please consider: the script WILL timeout with big/huge websites, if that happens
 - it is not possible to set default values 
 - it has bugs, I'm sure of it.
 - test coverage is....basic 
+- far from being PSR-[1-x] compliant
 
 ## System Requirements
 
