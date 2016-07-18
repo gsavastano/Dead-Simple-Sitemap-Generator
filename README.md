@@ -30,8 +30,7 @@ Create a simple PHP File as follows
 	
 then lunch it from the command line
 
-	php yourfile.php -ahttps -ugoogle.it -fweekly -p0.5 -ssitemap.xml
-
+	php yourfile.php -uexample.com -ahttps -p0.2 -fdaily -sexample.xml
 to see the options
 
 	php yourfile.php -h
