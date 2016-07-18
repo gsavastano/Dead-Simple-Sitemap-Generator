@@ -1,0 +1,15 @@
+{
+	"protocol": "http",
+	"url": "example.com",
+	"extension": [
+		".htm",
+		".html",
+		".php",
+		"/",
+		".aspx",
+		".asp"
+	],
+	"filename": "sitemap.xml",
+	"priority": "0.3",
+	"frequency": "daily"
+}
