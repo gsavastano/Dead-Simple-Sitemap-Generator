@@ -1,7 +1,6 @@
 # Dead Simple Sitemap Generator 0.1
 
-This library will crawl all unique internal links found on a given website
-up to a specified maximum page depth.
+This library will crawl all unique internal links found on a given website.
 
 ## How to Install
 
@@ -18,24 +17,40 @@ Then run `composer install`.
 
 ## Getting Started
 
-Here's a quick demo to crawl a website:
+Create a simple PHP File as follows
 
     <?php
-    require 'vendor/autoload.php';
+	
+	require 'vendor/autoload.php';
+	use gsavastano\dssg\dssg;
+	
+	$crawler = new Dssg;
+	$crawler->startCrawl();
+	
+then launch it from the command line
 
-    // Initiate crawl
-    $crawler = new \gsavastano\Dssg\Dssg;
-    $crawler->startCrawl();
+	php yourfile.php -uexample.com -ahttps -p0.2 -fdaily -sexample.xml
+to see the options
 
-it will create a sitemap.xml (or whatever name you prefer)
+	php yourfile.php -h
 
-## Setup
+please consider: the script WILL timeout with big/huge websites, if that happens try increasing your memory_limit
 
-There are two ways to set up the crawler:
+	<?php
+	ini_set('memory_limit', '2048M');
 
-* change variables in src/sitemap.ini
-* use the command line - use php example/crawl.php -h for help
- 
+
+## Limitations
+- requires a lot of memory for big/huge sites
+- doesn't always parse correctly all URL parameters (ex: ?#&)
+- all URL indexed have the same priority and frequency
+- it does not index assets
+- it does not index links pointing to external websites
+- it does not index subdomains
+- it is not possible to set default values 
+- it has bugs, I'm sure of it.
+- test coverage is....basic 
+- far from being PSR-[1-x] compliant
 
 ## System Requirements
 
@@ -46,4 +61,3 @@ There are two ways to set up the crawler:
 MIT Public License
 
 [composer]: http://getcomposer.org/
-[psr2]: https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-2-coding-style-guide.md

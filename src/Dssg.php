@@ -1,5 +1,4 @@
 <?php namespace gsavastano\Dssg;
-	require_once __DIR__.'/simple_html_dom.php';
 	class Dssg {
 
 		/**
@@ -74,8 +73,8 @@
 					'sitemap' => $this->valFileName($this->options['s']) ? $this->options['s'] : $this->defaults['sitemap'],
 					'protocol' => $this->valProtocol($this->options['a']) ? $this->options['a'] : $this->defaults['protocol'],
 					'url' => filter_var (isset($this->options['u']) ? $this->options['u'] : $this->defaults['url'], FILTER_SANITIZE_URL),
-					'frequency' => $this->valFrequency($this->options['f']) ? $this->options['s'] : $this->defaults['frequency'],
-					'priority' => $this->valPriority($this->options['f']) ? $this->options['p'] : $this->defaults['priority'],
+					'frequency' => $this->valFrequency($this->options['f']) ? $this->options['f'] : $this->defaults['frequency'],
+					'priority' => $this->valPriority($this->options['p']) ? $this->options['p'] : $this->defaults['priority'],
 					'extension' => explode(',',$this->defaults['extension']),
 				);
 
