@@ -49,7 +49,7 @@ class Dssg
         }
     }
 
-   /**
+    /**
      * @var bool Turn On/Off reading from CLI
      */
     private function isCli()
