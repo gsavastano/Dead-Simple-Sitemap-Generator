@@ -248,6 +248,9 @@ class Dssg
 
         $links = $this->clearUrlList($links);
         
+        if (empty($links)) {
+            return;
+        }
         foreach ($links as $val) {
             $nextUrl = $val or '';
 
