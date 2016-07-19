@@ -260,9 +260,9 @@ class Dssg
                         $this->fileHandle,
                         '
                         <url>
-                        <loc>'.htmlentities($nextUrl).'</loc>
-                        <changefreq>'.$this->config['frequency'].'</changefreq>
-                        <priority>'.$this->config['priority'].'</priority>
+                            <loc>'.htmlentities($nextUrl).'</loc>
+                            <changefreq>'.$this->config['frequency'].'</changefreq>
+                            <priority>'.$this->config['priority'].'</priority>
                         </url>'
                     );
                     $this->doScan($nextUrl);
@@ -303,8 +303,7 @@ class Dssg
         fwrite($this->fileHandle, '</urlset>'.self::NL);
         fclose($this->fileHandle);
 
-        echo 'Done.'.self::NL;
-        echo $this->config['filename'].' created.'.self::NL;
+        echo self::NL.'Done.'.self::NL.$this->config['filename'].' created.'.self::NL;
     }
 
     protected function valProtocol($val)
