@@ -224,17 +224,18 @@ class Dssg
 
         array_push($this->scanned, $url);
 
-        $html = str_get_html($this->getUrl($url));
-        if (!is_object($html)) {
-            return;
+        $dom = new \DOMDocument();
+        $internalErrors = libxml_use_internal_errors(true);
+        $dom->loadHTML($this->getUrl($url));
+        libxml_use_internal_errors($internalErrors);
+        $links = array();
+        foreach($dom->getElementsByTagName('a') as $link) {
+            $links[] = $link->getAttribute('href');
         }
-
-        $links = $html->find('a');
-        unset($html);
-
+        
         foreach ($links as $val) {
-            $nextUrl = $val->href or '';
 
+            $nextUrl = $val or '';
             $fragmentSplit = explode('#', $nextUrl);
             $nextUrl = $fragmentSplit[0];
 
