@@ -118,6 +118,9 @@ class Dssg
         }
 
         $completeUrl = $this->config['protocol'].'://'.$this->config['url'];
+        $params = parse_url($completeUrl);
+        $completeUrl = $params['scheme'].'://'.$params['host'];
+        unset($params);
 
         if (!$this->valUrl($completeUrl)) {
             die('Target url type not valid'.self::NL);
@@ -163,45 +166,13 @@ class Dssg
         return;
     }
 
-    protected function relToAbs($rel, $base)
-    {
-        extract(parse_url($base));
-
-        if (strpos($rel, '//') === 0) {
-            return $scheme.':'.$rel;
-        }
-
-        if (parse_url($rel, PHP_URL_SCHEME) != '') {
-            return $rel;
-        }
-        $firstChar = substr($rel, 0, 1);
-
-        if ($firstChar == '#'  || $firstChar == '?') {
-            return $base.$rel;
-        }
-        $path = preg_replace('#/[^/]*$#', '', $path);
-
-        if ($firstChar == '/') {
-            $path = '';
-        }
-
-        $abs = $host.$path.'/'.$rel;
-
-        $abs = preg_replace("/(\/\.?\/)/", "/", $abs);
-        $abs = preg_replace("/\/(?!\.\.)[^\/]+\/\.\.\//", "/", $abs);
-        
-        return  $scheme.'://'.$abs;
-    }
-
     protected function getUrl($url)
     {
         $agent = 'Mozilla/5.0(compatible;)';
-
         $curlHandler = curl_init();
         curl_setopt($curlHandler, CURLOPT_AUTOREFERER, true);
         curl_setopt($curlHandler, CURLOPT_URL, $url);
         curl_setopt($curlHandler, CURLOPT_USERAGENT, $agent);
-        curl_setopt($curlHandler, CURLOPT_VERBOSE, 1);
         curl_setopt($curlHandler, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($curlHandler, CURLOPT_SSL_VERIFYHOST, false);
         curl_setopt($curlHandler, CURLOPT_HEADER, 0);
@@ -212,8 +183,50 @@ class Dssg
         $data = curl_exec($curlHandler);
 
         curl_close($curlHandler);
-
         return $data;
+    }
+
+    protected function clearUrlList(array $list)
+    {
+        if (empty($list)) {
+            return;
+        }
+
+        $params = parse_url($this->config['url']);
+        $needle = $params['host'];
+        $lenght = strlen($this->config['url']);
+        if (stripos($params['host'], 'www') !== false) {
+            $needle = substr($params['host'], 4);
+        }
+        unset($params);
+
+        //remove duplicates
+        $list = array_merge(array_flip(array_flip($list)));
+        
+        //transform relative links to absolute, remove links to external websites and to subdomains
+        foreach ($list as $i => $link) {
+            //rel to abs - basic version
+            if (stripos($link, "/") === 0) {
+                $link = $this->config['url'].$link;
+            }
+            //no subdomains or external websites
+            if (substr($link, 0, $lenght) !== $this->config['url']) {
+                $link = $this->config['url'];
+            }
+            $list[$i] = filter_var($link, FILTER_SANITIZE_URL);
+        }
+
+        //remove all links that have already been scanned.
+        foreach ($list as $i => $link) {
+            if (in_array($link, $this->scanned)) {
+                unset($list[$i]);
+            }
+        }
+
+        //remove duplicates again
+        $list = array_merge(array_flip(array_flip($list)));
+
+        return $list;
     }
 
     protected function doScan($url)
@@ -221,7 +234,7 @@ class Dssg
         if (in_array($url, $this->scanned)) {
             return;
         }
-
+        echo self::NL.'Scanning: '.$url;
         array_push($this->scanned, $url);
 
         $dom = new \DOMDocument();
@@ -229,36 +242,27 @@ class Dssg
         $dom->loadHTML($this->getUrl($url));
         libxml_use_internal_errors($internalErrors);
         $links = array();
-        foreach($dom->getElementsByTagName('a') as $link) {
+        foreach ($dom->getElementsByTagName('a') as $link) {
             $links[] = $link->getAttribute('href');
         }
+
+        $links = $this->clearUrlList($links);
         
         foreach ($links as $val) {
-
             $nextUrl = $val or '';
-            $fragmentSplit = explode('#', $nextUrl);
-            $nextUrl = $fragmentSplit[0];
 
-            $nextUrl = @$this->relToAbs($nextUrl, $this->config['url']);
-
-            $nextUrl = filter_var($nextUrl, FILTER_SANITIZE_URL);
-
-            if (substr($nextUrl, 0, strlen($this->config['url'])) == $this->config['url']) {
-                if (!in_array($nextUrl, $this->scanned)) {
-                    foreach ($this->config['extension'] as $ext) {
-                        if (strpos($nextUrl, trim($ext)) > 0) {
-                            fwrite(
-                                $this->fileHandle,
-                                '
-                                <url>
-                                    <loc>'.htmlentities($nextUrl).'</loc>
-                                    <changefreq>'.$this->config['frequency'].'</changefreq>
-                                    <priority>'.$this->config['priority'].'</priority>
-                                </url>'
-                            );
-                            $this->doScan($nextUrl);
-                        }
-                    }
+            foreach ($this->config['extension'] as $ext) {
+                if (strpos($nextUrl, trim($ext)) > 0) {
+                    fwrite(
+                        $this->fileHandle,
+                        '
+                        <url>
+                        <loc>'.htmlentities($nextUrl).'</loc>
+                        <changefreq>'.$this->config['frequency'].'</changefreq>
+                        <priority>'.$this->config['priority'].'</priority>
+                        </url>'
+                    );
+                    $this->doScan($nextUrl);
                 }
             }
         }
@@ -276,7 +280,7 @@ class Dssg
             '<?xml version="1.0" encoding="UTF-8"?>
             <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
                     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                    xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9"
+                    xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
                     http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
             <url>'.self::NL.'
             <loc>'.htmlentities($this->config['url']).'</loc>
