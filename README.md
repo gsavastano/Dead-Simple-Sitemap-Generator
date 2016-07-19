@@ -1,4 +1,4 @@
-# Dead Simple Sitemap Generator 0.2
+# Dead Simple Sitemap Generator 0.3
 
 This script will crawl all unique internal links found on a given website. 
 
@@ -9,7 +9,7 @@ manifest file:
 
     {
         "require": {
-            "gsavastano/dssg": "0.2"
+            "gsavastano/dssg": "0.3"
         }
     }
 

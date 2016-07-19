@@ -40,7 +40,7 @@ class Dssg
     private $ready = false;
 
     const NL = "\n";
-    const VERSION = '0.2';
+    const VERSION = '0.3';
 
     public function __construct()
     {
