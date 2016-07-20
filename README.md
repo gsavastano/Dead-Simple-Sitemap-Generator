@@ -1,4 +1,4 @@
-# Dead Simple Sitemap Generator 0.3
+# Dead Simple Sitemap Generator 0.4
 
 This script will crawl all unique internal links found on a given website. 
 
@@ -9,7 +9,7 @@ manifest file:
 
     {
         "require": {
-            "gsavastano/dssg": "0.3.2"
+            "gsavastano/dssg": "0.4"
         }
     }
 
@@ -54,16 +54,14 @@ Create a simple PHP file
     <?php
 	
 	require 'vendor/autoload.php';
-	use gsavastano\dssg\dssg;
+	use gsavastano\dssg;
 	
-	$crawler = new Dssg;
+	$crawler = new Dssg\Crawl;
 	
 	//optional if passing params by CLI
 	$crawler->loadConfig(__DIR__.'/config.json');
 	
 	$crawler->startCrawl();
-
-or use the example provided.
 	
 then launch it from the command line
 
@@ -79,7 +77,6 @@ to see the options
 
 please consider: the script WILL timeout with big/huge websites, if that happens try increasing your memory_limit
 
-	<?php
 	ini_set('memory_limit', '2048M');
 	
 
