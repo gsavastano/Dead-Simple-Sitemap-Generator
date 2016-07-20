@@ -39,7 +39,7 @@ class Crawl
     private $validate;
 
     const _NL = "\n";
-    const _VERSION = '0.4.alpha';
+    const _VERSION = '0.4';
 
     public function __construct()
     {
