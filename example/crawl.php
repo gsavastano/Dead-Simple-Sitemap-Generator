@@ -7,9 +7,9 @@ ini_set('memory_limit', '2048M');
 
 require_once __DIR__.'/../src/Dssg.php';
 
-use gsavastano\Dssg\Dssg;
+use gsavastano\Dssg\Crawl;
 
-$crawler = new Dssg;
+$crawler = new Crawl;
 
 //optional if passing params by CLI
 $crawler->loadConfig(__DIR__.'/config.json');

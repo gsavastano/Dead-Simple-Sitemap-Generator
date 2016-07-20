@@ -2,7 +2,9 @@
 
 namespace gsavastano\Dssg;
 
-class Dssg
+include_once __DIR__.'/Validate.php';
+
+class Crawl
 {
     /**
      * @var array Configuration values
@@ -25,11 +27,6 @@ class Dssg
     private $args = 'vhcs::a::u::f::p::';
 
     /**
-     * @var array Default extensions
-     */
-    private $defaultExtensions = array('.htm', '.html', '.php', '/', '.aspx', '.asp');
-
-    /**
      * @var object File Pointer
      */
     private $fileHandle = false;
@@ -39,25 +36,23 @@ class Dssg
      */
     private $ready = false;
 
-    const NL = "\n";
-    const VERSION = '0.3.2';
+    private $validate;
+
+    const _NL = "\n";
+    const _VERSION = '0.4.alpha';
 
     public function __construct()
     {
-        if (!$this->isCli()) {
+        $this->validate = new Validate;
+        if (!$this->validate::isCli()) {
             die('Please use Command Line');
         }
-    }
-
-    private function isCli()
-    {
-        return php_sapi_name() === 'cli';
     }
 
     private function loadStaticConfig($file)
     {
         if (!file_exists($file) || !fopen($file, 'r')) {
-            die('Cannot open '.$file.NL);
+            $this->config['error'][] = 'Cannot open configuration file';
         }
 
         $this->config = json_decode(file_get_contents($file), true);
@@ -66,22 +61,23 @@ class Dssg
     private function loadIntercativeConfig()
     {
         $this->options = getopt($this->args);
-        if (!empty($this->options)) {
-            if (isset($this->options['a'])) {
-                $this->config['protocol'] = $this->options['a'];
-            }
-            if (isset($this->options['u'])) {
-                $this->config['url'] = $this->options['u'];
-            }
-            if (isset($this->options['s'])) {
-                $this->config['filename'] = $this->options['s'];
-            }
-            if (isset($this->options['f'])) {
-                $this->config['frequency'] = $this->options['f'];
-            }
-            if (isset($this->options['p'])) {
-                $this->config['priority'] = $this->options['p'];
-            }
+        if (empty($this->options)) {
+            return;
+        }
+        if (isset($this->options['a'])) {
+            $this->config['protocol'] = $this->options['a'];
+        }
+        if (isset($this->options['u'])) {
+            $this->config['url'] = $this->options['u'];
+        }
+        if (isset($this->options['s'])) {
+            $this->config['filename'] = $this->options['s'];
+        }
+        if (isset($this->options['f'])) {
+            $this->config['frequency'] = $this->options['f'];
+        }
+        if (isset($this->options['p'])) {
+            $this->config['priority'] = $this->options['p'];
         }
     }
 
@@ -91,7 +87,14 @@ class Dssg
             $this->loadStaticConfig($file);
         }
         $this->loadIntercativeConfig();
-        $this->validateConfig();
+        $this->config = $this->validate::validateConfig($this->config);
+
+        if (isset($this->config['error'])) {
+            foreach ($this->config['error'] as $error) {
+                echo $error.self::_NL;
+            }
+            die();
+        }
 
         if (isset($this->options['h'])) {
             $this->printHelp();
@@ -108,46 +111,15 @@ class Dssg
         return;
     }
 
-    private function validateConfig()
-    {
-        if (!$this->valFilename($this->config['filename'])) {
-            die('Sitemap file name not valid'.self::NL);
-        }
-        if (!$this->valProtocol($this->config['protocol'])) {
-            die('Procol type not valid'.self::NL);
-        }
-
-        $completeUrl = $this->config['protocol'].'://'.$this->config['url'];
-        $params = parse_url($completeUrl);
-        $completeUrl = $params['scheme'].'://'.$params['host'];
-        unset($params);
-
-        if (!$this->valUrl($completeUrl)) {
-            die('Target url type not valid'.self::NL);
-        }
-
-        $this->config['url'] = filter_var($completeUrl, FILTER_SANITIZE_URL);
-
-        if (!$this->valFrequency($this->config['frequency'])) {
-            die('Frequency value not valid'.self::NL);
-        }
-        if (!$this->valPriority($this->config['priority'])) {
-            die('Priority value not valid'.self::NL);
-        }
-        if (!isset($this->config['extension'])) {
-            $this->config['extension'] = $this->defaultExtensions;
-        }
-    }
-
     private function printConfig($json = false)
     {
         if (!$json) {
-            echo '[Crawler Config Variables]'.self::NL;
+            echo '[Crawler Config Variables]'.self::_NL;
             foreach ($this->config as $option => $value) {
                 $value = is_array($value) ? implode(', ', $value) : $value;
-                echo $option.' => '.$value.self::NL;
+                echo $option.' => '.$value.self::_NL;
             }
-            echo self::NL;
+            echo self::_NL;
         } else {
             return json_encode($this->config);
         }
@@ -193,10 +165,11 @@ class Dssg
         }
 
         $params = parse_url($this->config['url']);
+
         $needle = $params['host'];
         $lenght = strlen($this->config['url']);
-        if (stripos($params['host'], 'www') !== false) {
-            $needle = substr($params['host'], 4);
+        if (stripos($needle, 'www') !== false) {
+            $needle = substr($needle, 4);
         }
         unset($params);
 
@@ -234,7 +207,7 @@ class Dssg
         if (in_array($url, $this->scanned)) {
             return;
         }
-        echo self::NL.'Scanning: '.$url;
+        echo self::_NL.'Scanning: '.$url;
         array_push($this->scanned, $url);
 
         $dom = new \DOMDocument();
@@ -275,7 +248,7 @@ class Dssg
     {
         $this->fileHandle = fopen($this->config['filename'], 'w');
         if (!$this->fileHandle) {
-            die('Sitemap File not available'.self::NL);
+            die('Sitemap File not available'.self::_NL);
         }
 
         fwrite(
@@ -285,11 +258,11 @@ class Dssg
                     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                     xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
                     http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
-            <url>'.self::NL.'
+            <url>'.self::_NL.'
             <loc>'.htmlentities($this->config['url']).'</loc>
                 <changefreq>'.$this->config['frequency'].'</changefreq>
                 <priority>'.$this->config['priority'].'</priority>
-            </url>'.self::NL
+            </url>'.self::_NL
         );
 
         return;
@@ -298,72 +271,18 @@ class Dssg
     private function saveAndClose()
     {
         if (!$this->fileHandle) {
-            die("Can't file sitemap file to close".self::NL);
+            die("Can't find sitemap file to close".self::_NL);
         }
-        fwrite($this->fileHandle, '</urlset>'.self::NL);
+        fwrite($this->fileHandle, '</urlset>'.self::_NL);
         fclose($this->fileHandle);
 
-        echo self::NL.'Done.'.self::NL.$this->config['filename'].' created.'.self::NL;
+        echo self::_NL.'Done.'.self::_NL.$this->config['filename'].' created.'.self::_NL;
     }
-
-    protected function valProtocol($val)
-    {
-        $protocols = array('http', 'https');
-
-        return in_array($val, $protocols);
-    }
-
-    protected function valFilename($val)
-    {
-        $pattern = '/^(?!.*\/)(\w|\s|-)+\.xml$/';
-
-        return preg_match($pattern, $val) == 1 ? true : false;
-    }
-
-    protected function valFrequency($val)
-    {
-        $frequencies = array('always', 'hourly', 'daily', 'weekly', 'monthly', 'yearly', 'never');
-
-        return in_array($val, $frequencies);
-    }
-
-    protected function valPriority($val)
-    {
-        if (filter_var($val, FILTER_VALIDATE_FLOAT) <= 1 && is_numeric($val)) {
-            return $val > 0 ? true : false;
-        }
-
-        return false;
-    }
-
-    protected function valUrl($url)
-    {
-        if (!preg_match('%^(?:(?:https?)://)(?:\S+(?::\S*)?@)?(?:(?!(?:10|127)(?:\.\d{1,3}){3})(?!(?:169\.254|192\.168)(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z\x{00a1}-\x{ffff}0-9]-*)*[a-z\x{00a1}-\x{ffff}0-9]+)(?:\.(?:[a-z\x{00a1}-\x{ffff}0-9]-*)*[a-z\x{00a1}-\x{ffff}0-9]+)*(?:\.(?:[a-z\x{00a1}-\x{ffff}]{2,}))\.?)(?::\d{2,5})?(?:[/?#]\S*)?$%uiS', $url)) {
-            return false;
-        }
-
-        $curlHandler = curl_init($url);
-        curl_setopt($curlHandler, CURLOPT_HEADER, true);
-        curl_setopt($curlHandler, CURLOPT_NOBODY, true);
-        curl_setopt($curlHandler, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($curlHandler, CURLOPT_FOLLOWLOCATION, 1);
-        curl_setopt($curlHandler, CURLOPT_TIMEOUT, 10);
-        $output = curl_exec($curlHandler);
-        $httpCode = curl_getinfo($curlHandler, CURLINFO_HTTP_CODE);
-        curl_close($curlHandler);
-
-        if ($httpCode == "200") {
-            return true;
-        }
-        
-        return false;
-    }
-
 
     private function printHelp()
     {
         echo '
-Dead Simple Sitemap Generator version '.self::VERSION.'
+Dead Simple Sitemap Generator version '.self::_VERSION.'
 Giovanni Savastano(gsavastano@gmail.com)
 MIT Licence
 Use at your own risk :)
@@ -386,7 +305,7 @@ Option  Meaning
     private function printVersion()
     {
         echo '
-Dead Simple Sitemap Generator version '.self::VERSION.'
+Dead Simple Sitemap Generator version '.self::_VERSION.'
 Giovanni Savastano(gsavastano@gmail.com)
 MIT Licence
 Use at your own risk :)

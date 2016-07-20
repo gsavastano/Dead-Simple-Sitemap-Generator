@@ -1,3 +1,8 @@
+### v. 0.4 - 20/Jul/2016
+- new Validate class
+- psr-4 autoload
+- better error handling - less die() statements
+
 ### v. 0.3.2 - 19/Jul/2016
 - small cosmetic changes
 

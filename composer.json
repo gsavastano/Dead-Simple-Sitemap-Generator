@@ -18,9 +18,9 @@
 
     },
     "autoload": {
-        "files": [
-            "src/Dssg.php"
-        ]
+        "psr-4": {
+            "gsavastano\\dssg\\" : ""
+        }
     },
     "minimum-stability": "alpha"
 }
