@@ -19,7 +19,7 @@
     },
     "autoload": {
         "psr-4": {
-            "gsavastano\\dssg\\" : ""
+            "gsavastano\\dssg\\" : "src/"
         }
     },
     "minimum-stability": "alpha"
