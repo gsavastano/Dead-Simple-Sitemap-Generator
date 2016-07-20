@@ -1,6 +1,6 @@
 <?php
 
-namespace Dssg;
+namespace gsavastano\Dssg;
 
 class Validate
 {
