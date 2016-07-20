@@ -54,16 +54,14 @@ Create a simple PHP file
     <?php
 	
 	require 'vendor/autoload.php';
-	use gsavastano\Dssg\Crawl;
+	use gsavastano\dssg;
 	
-	$crawler = new Crawl;
+	$crawler = new Dssg\Crawl;
 	
 	//optional if passing params by CLI
 	$crawler->loadConfig(__DIR__.'/config.json');
 	
 	$crawler->startCrawl();
-
-or use the example provided.
 	
 then launch it from the command line
 
