@@ -1,6 +1,6 @@
 <?php
 
-namespace gsavastano\Dssg;
+namespace Dssg;
 
 include_once __DIR__.'/Validate.php';
 
