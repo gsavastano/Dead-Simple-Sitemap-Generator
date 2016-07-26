@@ -39,12 +39,11 @@ class Crawl
     private $validate;
 
     const _NL = "\n";
-    const _VERSION = '0.4';
+    const _VERSION = '0.5';
 
     public function __construct()
     {
-        $this->validate = new Validate;
-        if (!$this->validate::isCli()) {
+        if (!Validate::isCli()) {
             die('Please use Command Line');
         }
     }
@@ -87,7 +86,7 @@ class Crawl
             $this->loadStaticConfig($file);
         }
         $this->loadIntercativeConfig();
-        $this->config = $this->validate::validateConfig($this->config);
+        $this->config = Validate::validateConfig($this->config);
 
         if (isset($this->config['error'])) {
             foreach ($this->config['error'] as $error) {
@@ -158,6 +157,28 @@ class Crawl
         return $data;
     }
 
+
+    function rel2abs($rel, $base)
+    {
+        $host = $path = '';
+        if (parse_url($rel, PHP_URL_SCHEME) != '' || substr($rel, 0, 2) == '//') {
+            return $rel;   
+        }
+        if ($rel[0]=='#' || $rel[0]=='?') {
+            return $base.$rel;
+        }
+        extract(parse_url($base));
+        $path = preg_replace('#/[^/]*$#', '', $path);
+        if ($rel[0] == '/') {
+            $path = '';
+        }
+        $abs = "$host$path/$rel";
+        $re = array('#(/\.?/)#', '#/(?!\.\.)[^/]+/\.\./#');
+        for($n=1; $n>0; $abs=preg_replace($re, '/', $abs, -1, $n)) {}
+        return $scheme.'://'.$abs;
+    }
+
+
     protected function clearUrlList(array $list)
     {
         if (empty($list)) {
@@ -178,10 +199,9 @@ class Crawl
         
         //transform relative links to absolute, remove links to external websites and to subdomains
         foreach ($list as $i => $link) {
-            //rel to abs - basic version
-            if (stripos($link, "/") === 0) {
-                $link = $this->config['url'].$link;
-            }
+            
+            $link = $this->rel2abs($link, $this->config['url']);
+
             //no subdomains or external websites
             if (substr($link, 0, $lenght) !== $this->config['url']) {
                 $link = $this->config['url'];
@@ -212,7 +232,7 @@ class Crawl
 
         $dom = new \DOMDocument();
         $internalErrors = libxml_use_internal_errors(true);
-        $dom->loadHTML($this->getUrl($url));
+        @$dom->loadHTML($this->getUrl($url));
         libxml_use_internal_errors($internalErrors);
         $links = array();
         foreach ($dom->getElementsByTagName('a') as $link) {
