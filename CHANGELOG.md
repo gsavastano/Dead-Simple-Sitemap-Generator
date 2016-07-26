@@ -1,3 +1,7 @@
+### v. 0.5 - 26/Jul/2016
+- relative url to absolute url improved
+- bug fixing
+
 ### v. 0.4 - 20/Jul/2016
 - new Validate class
 - psr-4 autoload
