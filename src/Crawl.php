@@ -43,8 +43,7 @@ class Crawl
 
     public function __construct()
     {
-        $this->validate = new Validate;
-        if (!$this->validate::isCli()) {
+        if (!Validate::isCli()) {
             die('Please use Command Line');
         }
     }
@@ -87,7 +86,7 @@ class Crawl
             $this->loadStaticConfig($file);
         }
         $this->loadIntercativeConfig();
-        $this->config = $this->validate::validateConfig($this->config);
+        $this->config = Validate::validateConfig($this->config);
 
         if (isset($this->config['error'])) {
             foreach ($this->config['error'] as $error) {
